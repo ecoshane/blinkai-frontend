@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>BlinkAI - 專為粉絲打造的 AI 知識庫與助理</title>
+
+<!-- 引入 Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+
+<!-- 引入 Google Fonts --><link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+<!-- 引入 Font Awesome Icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* ------------------------- 共同樣式 ------------------------- */
+
+body {
+
+font-family: 'Lato', sans-serif;
+
+background-color: #111827;
+
+color: #d1d5db;
+
+transition: background-color 0.3s;
+
+overflow-x: hidden; /* 防止水平捲動 */
+
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+
+font-family: 'Poppins', sans-serif;
+
+font-weight: 700;
+
+}
+
+
+
+/* 主色調 - BLACKPINK 粉色 */
+
+.text-primary { color: #f472b6; }
+
+.bg-primary { background-color: #f472b6; }
+
+.border-primary { border-color: #f472b6; }
+
+
+/* 次要色調 - 淺粉色 */
+
+.text-secondary { color: #f9a8d4; }
+
+.bg-secondary { background-color: #f9a8d4; }
+
+
+
+/* 背景漸層 */
+
+.gradient-bg {
+
+background: linear-gradient(180deg, #111827 0%, #1f2937 100%);
+
+}
+
+
+
+/* 玻璃擬態效果 */
+
+.glass-card {
+
+background: rgba(31, 41, 55, 0.6);
+
+backdrop-filter: blur(10px);
+
+-webkit-backdrop-filter: blur(10px); /* Safari 支援 */
+
+border: 1px solid rgba(255, 255, 255, 0.1);
+
+}
+
+
+
+/* 區塊標題 */
+
+.section-title {
+
+@apply text-3xl md:text-4xl font-bold text-center mb-4; /* 手機版字體縮小 */
+
+color: #f9a8d4;
+
+}
+
+.section-subtitle {
+
+@apply text-lg md:text-xl text-gray-400 text-center max-w-2xl mx-auto mb-12 px-4;
+
+}
+
+
+
+/* 導航欄 */
+
+nav {
+
+background: rgba(17, 24, 39, 0.9);
+
+backdrop-filter: blur(10px);
+
+}
+
+
+/* 按鈕樣式 */
+
+.btn {
+
+@apply px-6 py-3 rounded-full font-bold text-lg transition-all duration-300 inline-block cursor-pointer select-none;
+
+}
+
+.btn-primary {
+
+@apply bg-primary text-gray-900;
+
+}
+
+.btn-primary:hover {
+
+@apply bg-secondary scale-105;
+
+}
+
+.btn-outline {
+
+@apply bg-transparent border-2 border-primary text-primary;
+
+}
+
+.btn-outline:hover {
+
+@apply bg-primary text-gray-900 scale-105;
+
+}
+
+
+
+/* --- LINE 按鈕樣式 --- */
+
+.btn-line {
+
+background-color: #06C755;
+
+color: white;
+
+}
+
+.btn-line:hover {
+
+background-color: #05b34c;
+
+transform: scale(1.05);
+
+box-shadow: 0 10px 15px -3px rgba(6, 199, 85, 0.3);
+
+}
+
+
+
+/* 特色卡片 */
+
+.feature-card {
+
+@apply glass-card p-6 md:p-8 rounded-2xl flex flex-col items-center text-center transition-all duration-300;
+
+}
+
+.feature-card:hover {
+
+transform: translateY(-5px);
+
+border-color: #f472b6;
+
+}
+
+.feature-card .icon {
+
+@apply text-4xl md:text-5xl mb-4 md:mb-6;
+
+color: #f472b6;
+
+}
+
+
+/* Hero 背景 */
+
+.hero-bg {
+
+background-image: linear-gradient(rgba(17, 24, 39, 0.8), rgba(17, 24, 39, 0.8)), url('https://images.unsplash.com/photo-1544365534-39b1a52c0469?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYyNjA5NjYyNw&q=80&w=1280');
+
+background-size: cover;
+
+background-position: center;
+
+}
+
+
+
+/* ------------------------- 聊天室樣式 ------------------------- */
+
+.chat-bubble {
+
+@apply p-3 md:p-4 rounded-2xl max-w-[85%] md:max-w-lg transition-all duration-300 text-sm md:text-base;
+
+}
+
+.user-bubble {
+
+@apply bg-gray-700 text-white rounded-br-none ml-auto;
+
+}
+
+.ai-bubble {
+
+@apply bg-primary text-gray-900 rounded-bl-none mr-auto;
+
+}
+
+.ai-bubble-error {
+
+@apply !bg-red-500 !text-white;
+
+}
+
+.ai-bubble .source {
+
+@apply mt-2 md:mt-3 pt-2 md:pt-3 border-t border-pink-800/30 text-xs md:text-sm text-gray-800;
+
+}
+
+.ai-bubble .source-title {
+
+@apply font-bold;
+
+}
+
+
+/* 載入動畫 */
+
+.loading-dots span {
+
+@apply w-2 h-2 bg-gray-400 rounded-full inline-block;
+
+animation: bounce 1.4s infinite both;
+
+}
+
+.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+
+.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+
+0%, 80%, 100% { transform: scale(0); }
+
+40% { transform: scale(1.0); }
+
+}
+
+
+
+/* ------------------------- LINE 模式樣式 ------------------------- */
+
+body.line-mode {
+
+background-color: #f0f0f0;
+
+/* 防止捲動 */
+
+height: 100dvh;
+
+overflow: hidden;
+
+}
+
+.line-mode #chat-assistant .glass-card {
+
+background: #8c9eff; /* LINE 經典藍背景 */
+
+border: none;
+
+border-radius: 0;
+
+height: 100dvh !important; /* 使用 dvh 解決手機網址列遮擋 */
+
+max-height: 100dvh;
+
+width: 100%;
+
+}
+
+.line-mode #chat-assistant {
+
+padding: 0 !important; /* 全螢幕 */
+
+height: 100dvh;
+
+}
+
+.line-mode .user-bubble {
+
+background-color: #96f26d !important; /* LINE 綠 */
+
+color: black !important;
+
+border-radius: 18px;
+
+border-top-right-radius: 2px;
+
+}
+
+.line-mode .ai-bubble {
+
+background-color: white !important;
+
+color: black !important;
+
+border-radius: 18px;
+
+border-top-left-radius: 2px;
+
+}
+
+.line-mode .chat-header {
+
+background-color: #2c3e50 !important;
+
+color: white;
+
+border-bottom: none;
+
+padding-top: env(safe-area-inset-top); /* 避開瀏海 */
+
+}
+
+.line-mode #chat-form {
+
+background-color: white !important;
+
+padding-bottom: max(1rem, env(safe-area-inset-bottom)); /* 避開底部橫條 */
+
+}
+
+.line-mode #chat-input {
+
+background-color: #f3f4f6;
+
+color: black;
+
+}
+
+.line-mode #send-button {
+
+background-color: #2563eb;
+
+color: white;
+
+}
+
+.line-mode .source {
+
+border-top-color: #eee;
+
+color: #666;
+
+}
+
+.line-mode #web-nav-controls {
+
+display: none;
+
+}
+
+
+
+/* 手機選單動畫 */
+
+#mobile-menu {
+
+transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+
+max-height: 0;
+
+opacity: 0;
+
+overflow: hidden;
+
+}
+
+#mobile-menu.open {
+
+max-height: 400px;
+
+opacity: 1;
+
+}
+
+</style>
+
+</head>
+
+<body class="antialiased">
+
+
+
+<!-- 1. 官網視圖 (Landing Page) -->
+
+<div id="landing-page">
+
+<!-- 導航欄 -->
+
+<nav class="sticky top-0 z-50 w-full shadow-lg">
+
+<div class="container mx-auto px-4 md:px-6 py-4">
+
+<div class="flex justify-between items-center">
+
+<h1 class="text-2xl md:text-3xl font-bold text-primary z-50">BlinkAI</h1>
+
+
+<!-- 電腦版選單 -->
+
+<div class="hidden md:flex space-x-6 items-center">
+
+<a href="#problem" class="text-gray-300 hover:text-primary transition">市場痛點</a>
+
+<a href="#solution" class="text-gray-300 hover:text-primary transition">解決方案</a>
+
+<a href="#tech" class="text-gray-300 hover:text-primary transition">核心技術</a>
+
+<a href="#line-integration" class="text-gray-300 hover:text-[#06C755] transition"><i class="fa-brands fa-line"></i> LINE 服務</a>
+
+<a href="#pricing" class="text-gray-300 hover:text-primary transition">定價方案</a>
+
+<a href="#" onclick="showChatView(); return false;" class="btn btn-primary !px-5 !py-2 !text-base">搶先體驗</a>
+
+</div>
+
+
+
+<!-- 手機版漢堡按鈕 -->
+
+<button id="menu-btn" class="md:hidden text-white text-2xl focus:outline-none z-50" onclick="toggleMobileMenu()">
+
+<i class="fa-solid fa-bars"></i>
+
+</button>
+
+</div>
+
+
+
+<!-- 手機版下拉選單 -->
+
+<div id="mobile-menu" class="md:hidden absolute top-full left-0 w-full bg-gray-900/95 backdrop-blur-xl border-b border-gray-700 shadow-2xl">
+
+<div class="flex flex-col p-6 space-y-4 text-center">
+
+<a href="#problem" onclick="toggleMobileMenu()" class="text-lg text-gray-300 hover:text-primary py-2">市場痛點</a>
+
+<a href="#solution" onclick="toggleMobileMenu()" class="text-lg text-gray-300 hover:text-primary py-2">解決方案</a>
+
+<a href="#tech" onclick="toggleMobileMenu()" class="text-lg text-gray-300 hover:text-primary py-2">核心技術</a>
+
+<a href="#line-integration" onclick="toggleMobileMenu()" class="text-lg text-gray-300 hover:text-[#06C755] py-2"><i class="fa-brands fa-line"></i> LINE 服務</a>
+
+<a href="#pricing" onclick="toggleMobileMenu()" class="text-lg text-gray-300 hover:text-primary py-2">定價方案</a>
+
+<a href="#" onclick="showChatView(); toggleMobileMenu(); return false;" class="btn btn-primary !w-full mt-2">搶先體驗</a>
+
+</div>
+
+</div>
+
+</div>
+
+</nav>
+
+
+
+<!-- Hero 區塊 -->
+
+<header class="hero-bg relative min-h-[80vh] flex items-center">
+
+<div class="container mx-auto px-4 md:px-6 py-20 md:py-48 text-center text-white">
+
+<h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">BlinkAI</h1>
+
+<p class="text-xl md:text-3xl font-light mb-10 md:mb-12 text-secondary px-2">為粉絲準確性與互動參與而生的專精 AI 平台</p>
+
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+
+<a href="#" onclick="showChatView(); return false;" class="btn btn-primary !text-lg md:!text-xl !py-3 md:!py-4 !px-8 shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:scale-105 transition-all duration-500 w-full sm:w-auto">搶先試用 AI 助理</a>
+
+</div>
+
+</div>
+
+</header>
+
+
+
+<!-- 市場痛點 (The Problem) -->
+
+<section id="problem" class="py-16 md:py-24 gradient-bg">
+
+<div class="container mx-auto px-4 md:px-6">
+
+<h2 class="section-title">粉絲資訊的危機</h2>
+
+<p class="section-subtitle">K-pop 的爆炸性增長創造了一個龐大但混亂的數據生態系統。粉絲在獲取可信資訊時，正面臨前所未有的挑戰。</p>
+
+
+<div class="grid md:grid-cols-3 gap-6 md:gap-8">
+
+<!-- 痛點 1 -->
+
+<div class="feature-card">
+
+<div class="icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+
+<h3 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">資訊過載與錯誤</h3>
+
+<p class="text-gray-300 text-sm md:text-base">網路充斥著粉絲猜測、錯誤翻譯和過時內容。事實與謠言混雜，導致粉絲對關鍵事件產生認知混淆。</p>
+
+</div>
+
+<!-- 痛點 2 -->
+
+<div class="feature-card">
+
+<div class="icon"><i class="fa-solid fa-robot"></i></div>
+
+<h3 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">通用 AI 的「幻覺」</h3>
+
+<p class="text-gray-300 text-sm md:text-base">通用 AI 為了回答問題，會捏造事實（例如：Lisa 是隊長、虛構的巡演日期），對尋求準確資訊的粉絲造成嚴重困擾。</p>
+
+</div>
+
+<!-- 痛點 3 -->
+
+<div class="feature-card">
+
+<div class="icon"><i class="fa-solid fa-baby"></i></div>
+
+<h3 class="text-xl md:text-2xl font-bold text-white mb-3 md:mb-4">新粉絲的高門檻</h3>
+
+<p class="text-gray-300 text-sm md:text-base">"Baby Blinks" 難以快速區分官方事實與粉絲理論。入坑的學習曲線陡峭，且在社群中提問時可能面臨壓力。</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- 解決方案 (The Solution) -->
+
+<section id="solution" class="py-16 md:py-24">
+
+<div class="container mx-auto px-4 md:px-6">
+
+<div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+
+<div>
+
+<img src="https://placehold.co/800x600/1f2937/f472b6?text=Solution"
+
+alt="BlinkAI 解決方案示意圖"
+
+class="rounded-2xl shadow-2xl w-full">
+
+</div>
+
+<div>
+
+<h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4 md:mb-6">我們的創新解決方案：BlinkAI</h2>
+
+<h3 class="text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4">專精領域 AI 助理</h3>
+
+<p class="mb-4 text-gray-300 text-sm md:text-base">BlinkAI 是一個專精領域的 AI 助理。我們不使用通用的網路資訊，而是建立了一個「BLACKPINK 官方知識庫」，確保資訊的絕對純淨。</p>
+
+<h3 class="text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4">RAG 核心技術</h3>
+
+<p class="mb-4 text-gray-300 text-sm md:text-base">核心技術 RAG (檢索增強生成)，能確保 AI 的每一個回答都有「事實依據」，從根本上杜絕「幻覺」和「粉絲猜測」。</p>
+
+<h3 class="text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4">平台特性</h3>
+
+<p class="text-gray-300 mb-6 text-sm md:text-base">這是一個為全球 Blinks 打造的、7x24 小時、多平台（Web, Discord, LINE）支援、絕對準確的 AI 夥伴。</p>
+
+<a href="#" onclick="showChatView(); return false;" class="btn btn-primary !text-base md:!text-lg !inline-block mt-2 w-full md:w-auto text-center">立即試用 BlinkAI 助理</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 核心技術 (Technology) -->
+
+<section id="tech" class="py-16 md:py-24 gradient-bg">
+
+<div class="container mx-auto px-4 md:px-6">
+
+<h2 class="section-title">BlinkAI 核心技術</h2>
+
+<p class="section-subtitle">BlinkAI 的準確性來自其嚴謹的雙重技術架構：專有知識庫與 RAG 工作流程。</p>
+
+
+<!-- 技術 1: 知識庫 -->
+
+<div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center mb-16 md:mb-20">
+
+<div>
+
+<h3 class="text-2xl md:text-3xl font-bold text-white mb-4">技術 I：BlinkAI 知識庫</h3>
+
+<p class="text-base md:text-lg text-gray-300 mb-6">BlinkAI 的強大不在於 LLM，而在於其「專有的知識庫」。我們僅從經過驗證的官方來源獲取資料，建立一個純淨的向量資料庫 (Vector DB)，作為 AI 回答的唯一事實來源。</p>
+
+<ul class="list-disc list-inside text-gray-300 space-y-2 text-sm md:text-base">
+
+<li>官方新聞稿與專輯介紹</li>
+
+<li>《Light Up the Sky》等紀錄片逐字稿</li>
+
+<li>Vogue, Billboard 等權威媒體的官方採訪</li>
+
+<li>已驗證的巡演數據與歌曲版權資訊</li>
+
+</ul>
+
+</div>
+
+<div>
+
+<img src="https://placehold.co/800x600/1f2937/f472b6?text=Knowledgebase"
+
+alt="[知識庫示意圖]"
+
+class="rounded-2xl shadow-2xl w-full">
+
+</div>
+
+</div>
+
+
+
+<!-- 技術 2: RAG -->
+
+<div class="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+
+<div class="md:order-2">
+
+<h3 class="text-2xl md:text-3xl font-bold text-white mb-4">技術 II：RAG 工作流程</h3>
+
+<p class="text-base md:text-lg text-gray-300 mb-6">我們利用 RAG 流程嚴格控制 AI 輸出：</p>
+
+<ol class="list-decimal list-inside text-gray-300 space-y-3 text-sm md:text-base">
+
+<li><strong>查詢 (Query):</strong> 粉絲提出問題。</li>
+
+<li><strong>檢索 (Retrieve):</strong> 系統首先從「Blink 知識庫」中檢索最相關的官方資料。</li>
+
+<li><strong>增強 (Augment):</strong> 系統將「官方資料」和「原始問題」打包。</li>
+
+<li><strong>生成 (Generate):</strong> 最後才將禮包交給 LLM，並用客製化提示詞指示它「只能根據提供的資料回答」。</li>
+
+</ol>
+
+</div>
+
+<div class="md:order-1">
+
+<img src="https://placehold.co/800x600/1f2937/f472b6?text=RAG+Flow"
+
+alt="[RAG 流程示意圖]"
+
+class="rounded-2xl shadow-2xl w-full">
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- LINE 整合區塊 -->
+
+<section id="line-integration" class="py-16 md:py-24 bg-gray-900">
+
+<div class="container mx-auto px-4 md:px-6">
+
+<div class="glass-card p-8 md:p-12 rounded-3xl border-l-0 md:border-l-8 border-t-8 md:border-t-0 border-[#06C755] max-w-4xl mx-auto">
+
+<div class="flex flex-col items-center text-center max-w-3xl mx-auto">
+
+<h2 class="text-2xl md:text-3xl font-bold text-white mb-4"><i class="fa-brands fa-line text-[#06C755] mr-3"></i> BlinkAI 在 LINE 上為您服務</h2>
+
+<p class="text-gray-300 mb-8 text-base md:text-lg leading-relaxed">
+
+不需要下載額外 App。直接在 LINE 上與 BlinkAI 對話，隨時隨地查詢巡演資訊、成員生日或驗證網路謠言。
+
+</p>
+
+<div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+
+<a href="https://line.me/R/ti/p/@360vgdow" target="_blank" class="btn btn-line text-center px-8 w-full sm:w-auto">
+
+<i class="fa-solid fa-user-plus mr-2"></i> 加入好友
+
+</a>
+
+<button onclick="showChatView(true)" class="btn btn-outline text-white border-white hover:bg-white hover:text-gray-900 px-8 w-full sm:w-auto">
+
+<i class="fa-solid fa-mobile-screen mr-2"></i> 預覽 LINE 介面
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- 用戶畫像 (Personas) -->
+
+<section id="personas" class="py-16 md:py-24">
+
+<div class="container mx-auto px-4 md:px-6">
+
+<h2 class="section-title">為每一種粉絲而生</h2>
+
+<p class="section-subtitle">無論你是剛入坑的新粉，還是資深內容創作者，BlinkAI 都能提供你需要的價值。</p>
+
+<div class="grid md:grid-cols-3 gap-6 md:gap-8">
+
+<!-- Persona 1 -->
+
+<div class="glass-card p-6 md:p-8 rounded-2xl transition-all duration-300 hover:border-primary">
+
+<img src="https://placehold.co/200x200/1f2937/f472b6?text=Jenny"
+
+alt="[新粉絲 Jenny]"
+
+class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-6 border-4 border-primary object-cover">
+
+<h3 class="text-xl md:text-2xl font-bold text-white text-center mb-2">Jenny (19)</h3>
+
+<p class="text-center text-gray-400 mb-4">Baby Blink</p>
+
+<p class="text-gray-300 text-sm md:text-base"><strong class="text-secondary">痛點：</strong>資訊混亂，怕問「笨問題」。</p>
+
+<p class="text-gray-300 text-sm md:text-base mt-2"><strong class="text-secondary">需要：</strong>安全、準確的 24/7 嚮導。</p>
+
+</div>
+
+<!-- Persona 2 -->
+
+<div class="glass-card p-6 md:p-8 rounded-2xl transition-all duration-300 hover:border-primary">
+
+<img src="https://images.unsplash.com/photo-1557862921-3e16092bb49c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYyNjA5NjYyNw&q=80&w=400"
+
+alt="[創作者 Alex]"
+
+class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-6 border-4 border-primary object-cover"
+
+onerror="this.onerror=null;this.src='https://placehold.co/200x200/1f2937/f472b6?text=Alex';">
+
+<h3 class="text-xl md:text-2xl font-bold text-white text-center mb-2">Alex (28)</h3>
+
+<p class="text-center text-gray-400 mb-4">創作者</p>
+
+<p class="text-gray-300 text-sm md:text-base"><strong class="text-secondary">痛點：</strong>查核事實耗時費力。</p>
+
+<p class="text-gray-300 text-sm md:text-base mt-2"><strong class="text-secondary">需要：</strong>可信賴的單一事實來源。</p>
+
+</div>
+
+<!-- Persona 3 -->
+
+<div class="glass-card p-6 md:p-8 rounded-2xl transition-all duration-300 hover:border-primary">
+
+<img src="https://images.unsplash.com/photo-1507591064343-9af923e232b7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwxNDU4OXwwfDF8cmFuZG9tfHx8fHx8fHx8MTYyNjA5NjYyNw&q=80&w=400"
+
+alt="[媒體人 Bob]"
+
+class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-6 border-4 border-primary object-cover"
+
+onerror="this.onerror=null;this.src='https://placehold.co/200x200/1f2937/f472b6?text=Bob';">
+
+<h3 class="text-xl md:text-2xl font-bold text-white text-center mb-2">Bob (45)</h3>
+
+<p class="text-center text-gray-400 mb-4">記者</p>
+
+<p class="text-gray-300 text-sm md:text-base"><strong class="text-secondary">痛點：</strong>通用 AI 數據不可用。</p>
+
+<p class="text-gray-300 text-sm md:text-base mt-2"><strong class="text-secondary">需要：</strong>商業級 AI 查詢引擎。</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- 定價方案 (Pricing) -->
+
+<section id="pricing" class="py-16 md:py-24 gradient-bg">
+
+<div class="container mx-auto px-4 md:px-6">
+
+<h2 class="section-title">選擇適合你的方案</h2>
+
+<p class="section-subtitle">從免費開始，或升級以獲得無限可能。</p>
+
+<div class="grid md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto">
+
+<!-- 方案 1: Freemium -->
+
+<div class="glass-card p-6 md:p-8 rounded-2xl border-2 border-gray-700 flex flex-col order-2 md:order-1">
+
+<h3 class="text-xl md:text-2xl font-bold text-white text-center mb-2">Freemium</h3>
+
+<p class="text-gray-400 text-center mb-6 text-sm">適合輕度使用者</p>
+
+<p class="text-4xl md:text-5xl font-extrabold text-white text-center mb-6">$0<span class="text-base md:text-lg text-gray-400"> USD</span></p>
+
+<ul class="space-y-3 text-gray-300 mb-8 flex-grow text-sm md:text-base">
+
+<li class="flex items-center"><i class="fa-solid fa-check text-primary mr-3"></i> 每日 10 次免費查詢</li>
+
+<li class="flex items-center"><i class="fa-solid fa-check text-primary mr-3"></i> 存取標準知識庫</li>
+
+</ul>
+
+<a href="#" onclick="showChatView(); return false;" class="w-full text-center btn btn-primary">立即開始</a>
+
+</div>
+
+<!-- 方案 2: Blink Plus -->
+
+<div class="glass-card p-6 md:p-8 rounded-2xl border-2 border-primary flex flex-col shadow-2xl relative order-1 md:order-2 transform scale-105 md:scale-100">
+
+<span class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-primary text-gray-900 text-xs md:text-sm font-bold px-4 py-1 rounded-full">最受歡迎</span>
+
+<h3 class="text-xl md:text-2xl font-bold text-primary text-center mb-2">Blink Plus</h3>
+
+<p class="text-gray-400 text-center mb-6 text-sm">適合資深粉絲</p>
+
+<p class="text-4xl md:text-5xl font-extrabold text-white text-center mb-6">$9.99<span class="text-base md:text-lg text-gray-400"> / 月</span></p>
+
+<ul class="space-y-3 text-gray-300 mb-8 flex-grow text-sm md:text-base">
+
+<li class="flex items-center"><i class="fa-solid fa-check text-primary mr-3"></i> <strong>無限次</strong> 查詢</li>
+
+<li class="flex items-center"><i class="fa-solid fa-check text-primary mr-3"></i> 知識庫即時更新</li>
+
+<li class="flex items-center"><i class="fa-solid fa-check text-primary mr-3"></i> LINE 平台支援</li>
+
+</ul>
+
+<a href="#" class="w-full text-center btn btn-primary">立即升級</a>
+
+</div>
+
+<!-- 方案 3: Media API -->
+
+<div class="glass-card p-6 md:p-8 rounded-2xl border-2 border-gray-700 flex flex-col order-3">
+
+<h3 class="text-xl md:text-2xl font-bold text-white text-center mb-2">Media API</h3>
+
+<p class="text-gray-400 text-center mb-6 text-sm">適合企業</p>
+
+<p class="text-3xl md:text-4xl font-extrabold text-white text-center mb-6">企業報價</p>
+
+<ul class="space-y-3 text-gray-300 mb-8 flex-grow text-sm md:text-base">
+
+<li class="flex items-center"><i class="fa-solid fa-check text-primary mr-3"></i> API 存取權限</li>
+
+<li class="flex items-center"><i class="fa-solid fa-check text-primary mr-3"></i> B2B 趨勢報告</li>
+
+</ul>
+
+<a href="#" class="w-full text-center btn btn-outline">聯繫我們</a>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- Footer -->
+
+<footer class="py-8 md:py-12 bg-gray-900">
+
+<div class="container mx-auto px-6 text-center text-gray-400 text-sm md:text-base">
+
+<p class="text-2xl font-bold text-primary mb-4">BlinkAI</p>
+
+<div class="flex flex-col md:flex-row justify-center gap-4 md:gap-6 mb-4">
+
+<a href="#solution" class="hover:text-primary">解決方案</a>
+
+<a href="#tech" class="hover:text-primary">核心技術</a>
+
+<a href="#pricing" class="hover:text-primary">定價方案</a>
+
+</div>
+
+<p>&copy; 2025 BlinkAI. All rights reserved.</p>
+
+</div>
+
+</footer>
+
+</div>
+
+
+
+
+
+<!-- 2. AI 助理視圖 (Chat Assistant) -->
+
+<div id="chat-assistant" class="hidden min-h-screen">
+
+<!-- 針對手機版優化的 Container，使用 dvh 確保全螢幕 -->
+
+<div class="container mx-auto max-w-3xl h-full flex flex-col p-4 md:p-12 min-h-[100dvh]">
+
+
+<!-- 頂部導航 -->
+
+<div id="web-nav-controls" class="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-8 gap-4">
+
+<div class="flex items-center justify-between w-full md:w-auto">
+
+<h1 class="text-2xl md:text-3xl font-bold text-primary">BlinkAI 助理</h1>
+
+<a href="#" onclick="showLandingView(); return false;" class="md:hidden text-gray-400 hover:text-primary text-sm">返回官網</a>
+
+</div>
+
+<div class="flex items-center gap-4 self-end md:self-auto">
+
+<!-- LINE 模式切換按鈕 -->
+
+<button onclick="toggleLineMode()" class="text-xs md:text-sm px-3 py-1 border border-gray-600 rounded-full text-gray-400 hover:text-[#06C755] hover:border-[#06C755] transition">
+
+<i class="fa-brands fa-line mr-1"></i> 切換介面
+
+</button>
+
+<a href="#" onclick="showLandingView(); return false;" class="hidden md:inline text-gray-400 hover:text-primary transition-colors">&larr; 返回官網</a>
+
+</div>
+
+</div>
+
+
+
+<p id="web-intro" class="text-gray-400 text-center mb-4 md:mb-10 text-sm md:text-base px-2">
+
+您可以問我任何關於 BLACKPINK 的問題。<br class="hidden md:inline">
+
+試著問：<strong class="text-white">「BLACKPINK 的隊長是誰？」</strong>
+
+</p>
+
+
+
+<!-- 聊天室窗口 -->
+
+<!-- 使用 flex-1 讓它佔據剩餘空間，手機版高度調整 -->
+
+<div class="glass-card rounded-2xl shadow-2xl overflow-hidden flex flex-col flex-1 md:h-[70vh] max-h-[80dvh] md:max-h-none">
+
+<!-- 聊天室頭部 -->
+
+<div class="chat-header p-3 md:p-4 bg-gray-900/50 border-b border-gray-700 relative flex-shrink-0">
+
+<h2 class="text-lg md:text-2xl font-bold text-white text-center">BlinkAI 助理</h2>
+
+<button class="text-gray-400 hover:text-gray-600 absolute right-4 top-1/2 -translate-y-1/2 hidden p-2" id="close-line-btn" onclick="showLandingView()">
+
+<i class="fa-solid fa-xmark text-xl"></i>
+
+</button>
+
+</div>
+
+
+<!-- 聊天內容 -->
+
+<div id="chat-content" class="p-4 md:p-8 space-y-4 md:space-y-6 flex-1 overflow-y-auto bg-transparent">
+
+<!-- 初始歡迎訊息 -->
+
+<div class="chat-bubble ai-bubble">
+
+<p class="font-bold"><i class="fa-solid fa-check-circle mr-2"></i> BlinkAI 助理：</p>
+
+<p>您好！我是 BlinkAI 助理。您可以問我任何關於 BLACKPINK 的問題。</p>
+
+<p class="mt-2">試著問我：「隊長是誰？」</p>
+
+</div>
+
+</div>
+
+
+
+<!-- 載入中指示器 -->
+
+<div id="loading-indicator" class="p-2 text-center text-gray-400 hidden flex-shrink-0">
+
+<div class="loading-dots">
+
+<span></span><span></span><span></span>
+
+</div>
+
+<span class="ml-2 text-xs md:text-sm">BlinkAI 正在思考中...</span>
+
+</div>
+
+
+
+<!-- 輸入框 -->
+
+<form id="chat-form" class="p-3 md:p-4 bg-gray-900/50 border-t border-gray-700 flex-shrink-0">
+
+<div class="flex items-center p-2 md:p-3 rounded-full bg-gray-800 border border-gray-700">
+
+<input
+
+type="text"
+
+id="chat-input"
+
+placeholder="輸入您的問題..."
+
+class="bg-transparent text-white w-full focus:outline-none ml-2 text-base"
+
+autocomplete="off"
+
+>
+
+<!-- 註：input text-base (16px) 可防止 iOS Safari 自動縮放 -->
+
+<button
+
+type="submit"
+
+id="send-button"
+
+class="bg-primary text-gray-900 rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center ml-2 flex-shrink-0 transition-transform duration-200 hover:scale-110 active:scale-95"
+
+>
+
+<i class="fa-solid fa-paper-plane text-sm md:text-base"></i>
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<script type="module">
+/* ------------------------- 視圖切換邏輯 ------------------------- */
+const landingPage = document.getElementById('landing-page');
+const chatAssistant = document.getElementById('chat-assistant');
+const body = document.body;
+let isLineMode = false;
+
+window.toggleMobileMenu = function() {
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('open');
+    menu.classList.toggle('hidden');
+    if (!menu.classList.contains('hidden')) {
+        menu.classList.remove('open');
+        setTimeout(() => menu.classList.add('open'), 10);
+    }
+}
+
+window.showLandingView = function () {
+    landingPage.classList.remove('hidden');
+    chatAssistant.classList.add('hidden');
+    body.classList.remove('p-0');
+    window.scrollTo(0, 0);
+    if (isLineMode) toggleLineMode();
+}
+
+window.showChatView = function (startLineMode = false) {
+    landingPage.classList.add('hidden');
+    chatAssistant.classList.remove('hidden');
+    if (window.innerWidth >= 768) {
+        // ... (保持不變)
+    }
+    window.scrollTo(0, 0);
+    if (startLineMode && !isLineMode) {
+        toggleLineMode();
+    }
+}
+
+// --- LINE 模式切換 ---
+window.toggleLineMode = function() {
+    isLineMode = !isLineMode;
+    const navControls = document.getElementById('web-nav-controls');
+    const intro = document.getElementById('web-intro');
+    const headerTitle = document.querySelector('.chat-header h2');
+    const closeBtn = document.getElementById('close-line-btn');
+    const chatContainer = document.querySelector('#chat-assistant .glass-card');
+    const containerDiv = document.querySelector('#chat-assistant .container');
+
+    if (isLineMode) {
+        body.classList.add('line-mode');
+        navControls.style.display = 'none';
+        intro.style.display = 'none';
+        headerTitle.innerText = 'BlinkAI (官方帳號)';
+        closeBtn.classList.remove('hidden');
+        containerDiv.classList.remove('p-4', 'md:p-12');
+        containerDiv.classList.add('!p-0', '!max-w-full');
+    } else {
+        body.classList.remove('line-mode');
+        navControls.style.display = 'flex';
+        intro.style.display = 'block';
+        headerTitle.innerText = 'BlinkAI 助理';
+        closeBtn.classList.add('hidden');
+        containerDiv.classList.add('p-4', 'md:p-12');
+        containerDiv.classList.remove('!p-0', '!max-w-full');
+    }
+}
+
+/* ------------------------- 聊天室功能邏輯 (真實 API) ------------------------- */
+
+// DOM 元素
+const chatContent = document.getElementById('chat-content');
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const sendButton = document.getElementById('send-button');
+const loadingIndicator = document.getElementById('loading-indicator');
+
+// **重要：API 配置 - 指向您的本地 Flask 後端**
+const API_BASE_URL = "https://22001361fe6f.ngrok-free.app";
+const API_CHAT_ENDPOINT = `${API_BASE_URL}/api/chat`;
+
+
+if (chatForm) {
+    chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const queryText = chatInput.value.trim();
+        if (!queryText) return;
+
+        setTimeout(() => {
+            chatContent.lastElementChild?.scrollIntoView({behavior: "smooth"});
+        }, 100);
+
+        addMessageToChat('user', '粉絲提問：', queryText);
+        chatInput.value = "";
+        handleAPIRequest(queryText); // 呼叫真實 API
+    });
+}
+
+
+// **新的 API 請求函式**
+async function handleAPIRequest(query) {
+    setLoading(true);
+    try {
+        const response = await fetch(API_CHAT_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query: query })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP Error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success) {
+            // 成功獲取 RAG 回答
+            // 整理來源資訊：將 sources 陣列轉換為單一字串
+            const sourceText = result.sources.map(s => `${s.source} (${s.category})`).join(' | ');
+            addMessageToChat('ai', 'BlinkAI 助理：', result.answer, sourceText || '知識庫未提供特定來源');
+        } else {
+            // 後端回傳失敗訊息
+            addMessageToChat('ai', 'BlinkAI 助理 (錯誤)：', `連線錯誤: ${result.error || '未知錯誤'}`, null, 'error');
+        }
+
+    } catch (error) {
+        console.error("API 請求失敗:", error);
+        addMessageToChat('ai', 'BlinkAI 助理 (錯誤)：', '抱歉，無法連線到後端伺服器 (http://localhost:5000)。請檢查後端是否正在執行。', null, 'error');
+    } finally {
+        setLoading(false);
+    }
+}
+
+
+function addMessageToChat(role, sender, text, source = null, type = 'normal') {
+    const bubble = document.createElement('div');
+    bubble.classList.add('chat-bubble');
+
+    let bubbleClasses = [];
+    let iconHtml = '';
+
+    if (role === 'user') {
+        bubbleClasses.push('user-bubble');
+        iconHtml = `<i class="fa-solid fa-user mr-2"></i>`;
+    } else {
+        bubbleClasses.push('ai-bubble');
+        if (type === 'error') {
+            bubbleClasses.push('ai-bubble-error');
+            iconHtml = `<i class="fa-solid fa-triangle-exclamation mr-2"></i>`;
+        } else if (source) {
+            iconHtml = `<i class="fa-solid fa-check-circle mr-2"></i>`;
+        } else {
+            iconHtml = `<i class="fa-solid fa-robot mr-2"></i>`;
+        }
+    }
+
+    bubble.classList.add(...bubbleClasses);
+    const formattedText = text.replace(/\n/g, "<br>");
+
+    // LINE 模式下不顯示發送者名字
+    const senderHtml = `<p class="font-bold ${isLineMode ? 'hidden' : ''}">${iconHtml} ${sender}</p>`;
+
+    let sourceHtml = "";
+    // 只有在非錯誤模式下，且有來源時才顯示
+    if (source && type !== 'error') {
+        sourceHtml = `
+        <div class="source">
+            <p class="source-title"><i class="fa-solid fa-link mr-1"></i> 引用來源：</p>
+            <p class="truncate">${source}</p>
+        </div>`;
+    }
+
+    bubble.innerHTML = `
+        ${senderHtml}
+        <p class="mt-1 md:mt-2">${formattedText}</p>
+        ${sourceHtml}
+    `;
+
+    chatContent.appendChild(bubble);
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
+
+function setLoading(isLoading) {
+    if (isLoading) {
+        loadingIndicator.classList.remove("hidden");
+        chatInput.disabled = true;
+        sendButton.disabled = true;
+    } else {
+        loadingIndicator.classList.add("hidden");
+        chatInput.disabled = false;
+        sendButton.disabled = false;
+        // 防止手機鍵盤收起後失焦
+        if (window.innerWidth > 768) chatInput.focus();
+    }
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
+
+// 初始狀態
+showLandingView();
+</script>
+
+</body>
+
+</html>
+
+
+
+
+
